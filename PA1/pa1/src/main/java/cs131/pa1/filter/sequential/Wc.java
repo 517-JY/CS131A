@@ -115,5 +115,9 @@ public class Wc extends SequentialFilter{
 		return null;
 	}
 	
+	@Override
+	public String toString() {
+		return "wc";
+	}
 	
 }

@@ -26,11 +26,6 @@ public class Cat extends SequentialFilter{
 	public static boolean hasPipedInput = false;
 	public static boolean hasPipedOutput = true;
 	
-	//public Queue<String> ouput = new LinkedList<String>();
-	//public Queue<String> input = null;
-	
-    //public Queue<String> output;
-    //public Queue<String> input;
 	
 	
 	public static boolean getHasPipedInput() {
@@ -101,18 +96,6 @@ public class Cat extends SequentialFilter{
 		 
 		reader.close();
 		
-//		System.out.println("Wheater cat process has Been executted");
-//		
-//		System.out.println("Cat ouput is " + output);
-		
-		
-		//System.out.println("Ouput in Cat Class" + output);
-		
-		
-//		int outputSize = output.size();		
-//		for (int i = 0; i < outputSize; i++) {
-//			System.out.print(output.poll());
-//		}
 	}
 	
 
@@ -122,5 +105,11 @@ public class Cat extends SequentialFilter{
 		
 		// pending for doc and editing
 		return true;
+	}
+	
+	
+	@Override
+	public String toString() {
+		return "cat " + para;
 	}
 }

@@ -2,12 +2,11 @@ package cs131.pa1.filter.sequential;
 
 import cs131.pa1.filter.Filter;
 
-public class Pwd extends SequentialFilter{
+public class Cd extends SequentialFilter{
 	
-	public static String symbol = "pwd";
+	public static String symbol = "cd";
 	public static boolean hasPipedInput = false;
-	public static boolean hasPipedOutput = true;
-	
+	public static boolean hasPipedOutput = false;
 	
 	public static boolean getHasPipedInput() {
 		return hasPipedInput;
@@ -17,6 +16,7 @@ public class Pwd extends SequentialFilter{
 	public static boolean getHasPipedOutput() {
 		return hasPipedOutput;
 	}
+	
 	
 
 	@Override
@@ -40,10 +40,5 @@ public class Pwd extends SequentialFilter{
 		return true;
 	}
 	
-	
-	@Override
-	public String toString() {
-		return "pwd";
-	}
 	
 }

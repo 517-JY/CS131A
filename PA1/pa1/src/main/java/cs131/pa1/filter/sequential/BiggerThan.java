@@ -13,6 +13,17 @@ public class BiggerThan extends SequentialFilter{
 	private static String symbol = ">";
 	public static boolean hasPipedInput = true;
 	public static boolean hasPipedOutput = false;
+	
+	
+	
+	public static boolean getHasPipedInput() {
+		return hasPipedInput;
+	}
+	
+	
+	public static boolean getHasPipedOutput() {
+		return hasPipedOutput;
+	}
 
 	
 	public BiggerThan(String para) {
@@ -27,17 +38,7 @@ public class BiggerThan extends SequentialFilter{
 		return symbol;
 	}
 	
-	
 
-	public static boolean getHasPipedInput() {
-		return hasPipedInput;
-	}
-	
-	
-	public static boolean getHasPipedOutput() {
-		return hasPipedOutput;
-	}
-	
 	
 	// Parameter for this filter
 	private String para;
@@ -47,6 +48,14 @@ public class BiggerThan extends SequentialFilter{
 	public String getParameter() {
 		return this.para;
 	}
+	
+	@Override
+	public String toString() {
+		return "> " + para;
+	}
+	
+	
+	
 	
 	
 	@Override

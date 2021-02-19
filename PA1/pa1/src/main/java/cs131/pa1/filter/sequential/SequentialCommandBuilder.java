@@ -159,14 +159,18 @@ public class SequentialCommandBuilder {
 
 		filterTraversed.clear();
 		while(!subStrings.isEmpty()) {
+			//System.out.println("substrings " + subStrings);
 			String subCommand = subStrings.poll().trim();		
 			
-
+            
 			
 	
 			currFilter = constructFilterFromSubCommand(subCommand);
 
 			filterTraversed.add(currFilter);
+			
+			
+			//System.out.println("filters add" + currFilter);
 			
 			if (prevFilter !=null) {
 				prevFilter.setNextFilter(currFilter);
@@ -223,7 +227,7 @@ public class SequentialCommandBuilder {
 		// System.out.println("Whether is here after linkFilters check " + linkedCheck);
 		
 		// Needs further modifying
-		if (true) {
+		if (linkFilters(filterTraversed)) {
 			SequentialFilter finalFilter = determineFinalFilter(lastCommand);
 			
 			
@@ -479,42 +483,59 @@ public class SequentialCommandBuilder {
 	// checks if there is information in the currentFlow
 	// pending doc
 	// 没有完成
-	private static boolean checkRequiresInput(String[] commands) throws NoSuchFileException, IOException {
+	private static boolean checkRequiresInput(List<SequentialFilter> filters) throws NoSuchFileException, IOException {
 		boolean checkErrorFound = false;
-		String symbol= "";
-		String output= commands[0];
+		String currFilterSymbol="";
+		String currToStringSymbol="";
+		String currFilterPara ="";
+		String prevFilterSymbol=null;
+		SequentialFilter currFilter = null;
+		SequentialFilter prevFilter = null;
 		
-		
-		if(commands !=null && commands.length !=0) {
-			symbol = commands[0];
-		}
-		
-		String testSymbol = symbol.toLowerCase();
-		
-		if(testSymbol.equals("wc") || testSymbol.equals("grep") || 
-				testSymbol.equals("uniq") || testSymbol.equals(">")) {
+		if(filters!=null) {
+			for(int i = 0; i< filters.size(); i++) {
+				currFilter = filters.get(i);
+				
+				if(currFilter!= null) {
+					String[] temp = currFilter.toString().split("\\s+");
+				
+					if(temp != null) {
+						currFilterSymbol = temp[0].toLowerCase();
+						currToStringSymbol = currFilterSymbol;
+						if(temp.length > 1) {
+							currToStringSymbol += " " + temp[1];
+						}
+					}
 					
-			checkErrorFound = (currentFlowInfo == null);
-			
+					
+					if(currFilterSymbol !=null) {
+						if(currFilterSymbol.equals("wc") ||currFilterSymbol.equals("grep") ||
+								currFilterSymbol.equals(">") ||currFilterSymbol.equals("uniq")) {
+							if(prevFilterSymbol == null || prevFilterSymbol.equals("cd") || prevFilterSymbol.equals(">")) {
+								
+								
+								checkErrorFound = true;
+							}
+						}
+						
+						if(checkErrorFound) {
+
+							System.out.print(Message.REQUIRES_INPUT.with_parameter(currToStringSymbol));	
+						}
+						
+						
+					}
+					
+					prevFilterSymbol = currFilterSymbol;
+
+				}
+				
+				
+
+			}
 		}
 		
-		for(int i = 1; i < commands.length; i++) {
-			output += " ";
-			output += commands[i];
-		}
 		
-		
-		// if CommandNotFound Error found, print relevant information
-		if(checkErrorFound) {
-			//System.out.println("Whether is here");
-			System.out.print(Message.REQUIRES_INPUT.with_parameter(output));	
-		}
-		
-		// symbolTraversed.clear();
-		
-		
-		// Reset
-		currentFlowInfo = null; 
 		
 		return checkErrorFound;
 	}
@@ -535,40 +556,51 @@ public class SequentialCommandBuilder {
 	private static boolean linkFilters(List<SequentialFilter> filters) throws NoSuchFileException, IOException{
 		SequentialFilter currFilter = null;
 		SequentialFilter prevFilter = null;
-		boolean sofarLinkedCheck = !Error_COMMAND_NOT_FOUND && !Error_REQUIRES_PARAMETER;
 		
 		
-		if(filters != null) {
-			
-			for (int i = 0; i < filters.size(); i++) {
-				currFilter = filters.get(i);
-				
-				// Attention : Before this , everything is fine 
-				
-				//System.out.println("current directory " + SequentialREPL.currentWorkingDirectory);
-				if (currFilter !=null) {
-					currFilter.process();
-					System.out.println("Current filter's output is " + currFilter.output);
-				}
+		Error_REQUIRES_INPUT = checkRequiresInput(filters);
+		
+		//System.out.println("Filters is " + filters);
+		
+		
+		// System.out.println("Whether is linkFilters get");
+		
+//		if (filters!= null) {
+//			for(int i = 0 ;i < filters.size(); i++) {
+//				System.out.println("current filters is " + filters.get(i).toString());
+//			}
+//		}
 
-				if (currFilter !=null && prevFilter !=null) {
-					currFilter.setPrevFilter(prevFilter);
-					prevFilter.setNextFilter(currFilter);
-				}
-				
-				prevFilter = currFilter;
-				
-			}
-		}
 		
 		
 		
 		
+//		if(filters != null) {
+//			
+//			for (int i = 0; i < filters.size(); i++) {
+//				currFilter = filters.get(i);
+//				
+//				// Attention : Before this , everything is fine 
+//				
+//				//System.out.println("current directory " + SequentialREPL.currentWorkingDirectory);
+//				if (currFilter !=null) {
+//					currFilter.process();
+//					//System.out.println("Current filter's output is " + currFilter.output);
+//				}
+//
+//				if (currFilter !=null && prevFilter !=null) {
+//					currFilter.setPrevFilter(prevFilter);
+//					prevFilter.setNextFilter(currFilter);
+//				}
+//				
+//				prevFilter = currFilter;
+//				
+//			}
+//		}
 		
-//		return !Error_COMMAND_NOT_FOUND && !Error_FILE_NOT_FOUND &&
-//		!Error_DIRECTORY_NOT_FOUND && !Error_REQUIRES_INPUT &&
-//		!Error_CANNOT_HAVE_OUTPUT && !Error_REQUIRES_PARAMETER &&
-//		!Error_INVALID_PARAMETER && !Error_CANNOT_HAVE_INPUT;
+		
+		boolean sofarLinkedCheck = !Error_COMMAND_NOT_FOUND && !Error_REQUIRES_PARAMETER 
+				&& !Error_REQUIRES_INPUT ;
 		
 		return sofarLinkedCheck;
 	}

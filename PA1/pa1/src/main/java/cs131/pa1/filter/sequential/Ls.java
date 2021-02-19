@@ -5,8 +5,19 @@ import cs131.pa1.filter.Filter;
 public class Ls extends SequentialFilter{
 	
 	public static String symbol = "ls";
-	public static boolean pipedInput = false;
-	public static boolean pipedOutput = true;
+	public static boolean hasPipedInput = false;
+	public static boolean hasPipedOutput = true;
+	
+	public static boolean getHasPipedInput() {
+		return hasPipedInput;
+	}
+	
+	
+	public static boolean getHasPipedOutput() {
+		return hasPipedOutput;
+	}
+	
+	
 
 	@Override
 	// pending for doc and editing
@@ -30,4 +41,8 @@ public class Ls extends SequentialFilter{
 	}
 	
 	
+	@Override
+	public String toString() {
+		return "ls";
+	}
 }

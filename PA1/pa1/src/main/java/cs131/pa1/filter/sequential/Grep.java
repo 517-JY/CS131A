@@ -64,4 +64,8 @@ public class Grep extends SequentialFilter{
 	}
 	
 	
+	@Override
+	public String toString() {
+		return "grep " + para;
+	}
 }
