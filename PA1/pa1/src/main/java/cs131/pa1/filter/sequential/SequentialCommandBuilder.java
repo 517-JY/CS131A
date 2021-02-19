@@ -410,7 +410,17 @@ public class SequentialCommandBuilder {
 				para = filterAndPara[1];
 
 				target = new BiggerThan(para);
+			} else if (symbol.equals("pwd")) {
+				target = new Pwd();
+			} else if (symbol.equals("ls")) {
+				target = new Ls();
+			} else if (symbol.equals("cd")) {
+				para = filterAndPara[1];
+
+				target = new Cd(para);
+				
 			}
+					
 			
 
 		}
@@ -482,7 +492,7 @@ public class SequentialCommandBuilder {
 	
 	// checks if there is information in the currentFlow
 	// pending doc
-	// 没有完成
+	// wc test does not paas
 	private static boolean checkRequiresInput(List<SequentialFilter> filters) throws NoSuchFileException, IOException {
 		boolean checkErrorFound = false;
 		String currFilterSymbol="";
@@ -543,6 +553,66 @@ public class SequentialCommandBuilder {
 	
 	
 	
+	
+	private static boolean checkCanNotHaveInput(List<SequentialFilter> filters) throws NoSuchFileException, IOException {
+		boolean checkErrorFound = false;
+		String currFilterSymbol="";
+		String currToStringSymbol="";
+		String currFilterPara ="";
+		String prevFilterSymbol=null;
+		SequentialFilter currFilter = null;
+		SequentialFilter prevFilter = null;
+		
+		if(filters!=null) {
+			for(int i = 0; i< filters.size(); i++) {
+				currFilter = filters.get(i);
+				
+				if(currFilter!= null) {
+					String[] temp = currFilter.toString().split("\\s+");
+					
+				
+					if(temp != null) {
+						currFilterSymbol = temp[0].toLowerCase();
+						currToStringSymbol = currFilterSymbol;
+						if(temp.length > 1) {
+							currToStringSymbol = temp[0]+ " " + temp[1];
+						}
+					}
+					
+					if(currFilterSymbol !=null) {
+						if(currFilterSymbol.equals("cat") ||currFilterSymbol.equals("ls") ||
+								currFilterSymbol.equals("pwd") ||currFilterSymbol.equals("cd")) {
+							if(prevFilterSymbol != null) {
+								 
+								checkErrorFound = true;
+
+							}
+						}
+						
+						if(checkErrorFound) {
+
+							System.out.print(Message.CANNOT_HAVE_INPUT.with_parameter(currToStringSymbol));	
+						}
+						
+						
+					}
+					
+					prevFilterSymbol = currFilterSymbol;
+
+				}
+				
+				
+
+			}
+		}
+		
+		
+		
+		return checkErrorFound;
+	}
+	
+	
+	
 	/**
 	 * links the given filters with the order they appear in the list
 	 * @param filters the given filters to link
@@ -559,6 +629,7 @@ public class SequentialCommandBuilder {
 		
 		
 		Error_REQUIRES_INPUT = checkRequiresInput(filters);
+		Error_CANNOT_HAVE_INPUT = checkCanNotHaveInput(filters);
 		
 		//System.out.println("Filters is " + filters);
 		
@@ -600,7 +671,7 @@ public class SequentialCommandBuilder {
 		
 		
 		boolean sofarLinkedCheck = !Error_COMMAND_NOT_FOUND && !Error_REQUIRES_PARAMETER 
-				&& !Error_REQUIRES_INPUT ;
+				&& !Error_REQUIRES_INPUT && !Error_CANNOT_HAVE_INPUT;
 		
 		return sofarLinkedCheck;
 	}

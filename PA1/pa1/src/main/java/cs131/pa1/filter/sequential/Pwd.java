@@ -1,5 +1,7 @@
 package cs131.pa1.filter.sequential;
 
+import java.util.LinkedList;
+
 import cs131.pa1.filter.Filter;
 
 public class Pwd extends SequentialFilter{
@@ -7,6 +9,14 @@ public class Pwd extends SequentialFilter{
 	public static String symbol = "pwd";
 	public static boolean hasPipedInput = false;
 	public static boolean hasPipedOutput = true;
+
+	
+	
+	public Pwd() {
+		super();
+		output = new LinkedList<String>();
+		input = new LinkedList<String>(); 
+	}
 	
 	
 	public static boolean getHasPipedInput() {
@@ -21,15 +31,16 @@ public class Pwd extends SequentialFilter{
 
 	@Override
 	// pending for doc and editing
-	protected String processLine(String line) {
-		// TODO Auto-generated method stub
-		return null;
+	protected String processLine(String line) {	
+		output.add(line + "\n");
+		return line;
+
 	}
 	
 	@Override
 	// pending for doc and editing
 	public void process(){
-
+			processLine(SequentialREPL.currentWorkingDirectory);
 	}
 	
 	
