@@ -1,2 +1,2 @@
-# CS131A
+# CSOS
 OS_Projects
