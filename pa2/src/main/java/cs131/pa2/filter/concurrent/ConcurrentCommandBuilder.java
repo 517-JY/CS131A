@@ -64,6 +64,7 @@ public class ConcurrentCommandBuilder {
 			return new PrintFilter();
 		} else {
 			try{
+				redir[1] = redir[1].replace("&", "");
 				return new RedirectFilter("> " + redir[1]);
 			} catch (Exception e) {
 				return null;
